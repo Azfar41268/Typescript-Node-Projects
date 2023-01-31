@@ -54,7 +54,7 @@ while (loop) {
                 firstEnemyHealth -= player1.damage;
                 player1.health -= (firstEnemyDamage / 2);
                 console.log(`You have attacked and have been hit too \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health}`);
-                while (firstEnemyHealth > 0) {
+                while (firstEnemyHealth > 0 && player1.health > 0) {
                     const move = await inquirer.prompt([
                         {
                             type: "list",
@@ -67,27 +67,43 @@ while (loop) {
                         firstEnemyHealth -= player1.damage;
                         player1.health -= (firstEnemyDamage / 2);
                         console.log(`You have attacked and have been hit too \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health}`);
+                        if (player1.health <= 0) {
+                            console.log(chalk.redBright("You have lost!!"));
+                            break;
+                        }
                     }
                     else if (move.move === "Drink Health Potion") {
-                        if (potion !== 0) {
-                            potion -= 1;
-                            player1.health = player1.health + 20;
-                            console.log(`You drank a health Potion \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health} \n You have ${potion} health Potions left!`);
+                        if (player1.health <= 0) {
+                            console.log(chalk.redBright("You have lost!!"));
+                            break;
                         }
                         else {
-                            player1.health -= firstEnemyDamage;
-                            console.log(`You do not have any remaining potions and have been hit! \n ${chalk.yellowBright(firstEnemyHealth)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health}`);
+                            if (potion !== 0) {
+                                potion -= 1;
+                                player1.health = player1.health + 20;
+                                console.log(`You drank a health Potion \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health} \n You have ${potion} health Potions left!`);
+                            }
+                            else {
+                                player1.health -= firstEnemyDamage;
+                                console.log(`You do not have any remaining potions and have been hit! \n ${chalk.yellowBright(firstEnemyHealth)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health}`);
+                            }
                         }
                     }
                     else if (move.move === "Run") {
-                        if (run !== 0) {
-                            run = run - 1;
-                            console.log(`You ran away \n ${player1.name} : ${player1.health} \n You can run away only ${run} more times!`);
-                            continue;
+                        if (player1.health <= 0) {
+                            console.log(chalk.redBright("You have lost!!"));
+                            break;
                         }
                         else {
-                            player1.health -= firstEnemyDamage;
-                            console.log(`You cannot run anymore \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health} \n You have been attacked by the monster`);
+                            if (run !== 0) {
+                                run = run - 1;
+                                console.log(`You ran away \n ${player1.name} : ${player1.health} \n You can run away only ${run} more times!`);
+                                continue;
+                            }
+                            else {
+                                player1.health -= firstEnemyDamage;
+                                console.log(`You cannot run anymore \n ${chalk.yellowBright(firstEnemyName)} : ${firstEnemyHealth} \n ${chalk.yellowBright(player1.name)} : ${player1.health} \n You have been attacked by the monster`);
+                            }
                         }
                     }
                     else if (move.move === "Exit the dungeon") {
